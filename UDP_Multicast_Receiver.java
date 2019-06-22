@@ -9,6 +9,7 @@ public class UDP_Multicast_Receiver extends Thread {
     MulticastSocket s;
     boolean isReceiving = false;
     private String nick;
+    boolean isReserved; //TODO
 
     public boolean isNickBusy() {
         return isNickBusy;
