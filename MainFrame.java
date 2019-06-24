@@ -32,7 +32,7 @@ public class MainFrame extends JFrame {
     JTextArea output = new JTextArea();
     JButton sendButton = new JButton("Send");
 
-    MainFrame() {
+    MainFrame(){
         GroupLayout layout = new GroupLayout(this.getContentPane());
         this.getContentPane().setLayout(layout);
         layout.setAutoCreateGaps(true);
@@ -70,21 +70,20 @@ public class MainFrame extends JFrame {
         this.setDefaultCloseOperation(3);
         this.setLocationRelativeTo((Component)null);
         this.setVisible(true);
+
+        if (MainFrame.this.receiver != null && MainFrame.this.receiver.isNickBusy()){
+            MainFrame.this.startButton.setEnabled(true);
+            MainFrame.this.stopButton.setEnabled(false);
+            MainFrame.this.textFieldNick.setEnabled(true);
+        }
+
         this.startButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e){
                 MainFrame.this.startButton.setEnabled(false);
                 MainFrame.this.stopButton.setEnabled(true);
                 MainFrame.this.textFieldNick.setEnabled(false);
                 MainFrame.frame.receiver = new UDP_Multicast_Receiver(MainFrame.this.textFieldNick.getText());
                 MainFrame.this.receiver.Start(MainFrame.this.ip, MainFrame.this.port);
-                UDP_Multicast_Sender.sendData(MainFrame.this.ip, MainFrame.this.port, "NICK " + MainFrame.this.textFieldNick.getText());
-                if (MainFrame.this.receiver.isNickBusy()){
-                    MainFrame.this.startButton.setEnabled(true);
-                    MainFrame.this.stopButton.setEnabled(false);
-                    MainFrame.this.textFieldNick.setEnabled(true);
-                    MainFrame.this.receiver.Stop();
-                    MainFrame.this.receiver = null;
-                }
             }
         });
         this.stopButton.addActionListener(new ActionListener() {
@@ -97,7 +96,7 @@ public class MainFrame extends JFrame {
         });
         this.sendButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                UDP_Multicast_Sender.sendData(MainFrame.this.ip, MainFrame.this.port, MainFrame.this.textFieldMesg.getText());
+                UDP_Multicast_Sender.sendData(MainFrame.this.ip, MainFrame.this.port, MainFrame.this.receiver.getNick() + " " + MainFrame.this.textFieldMesg.getText());
             }
         });
     }
@@ -123,7 +122,6 @@ public class MainFrame extends JFrame {
                 } catch (Exception var2) {
                     var2.printStackTrace();
                 }
-
                 MainFrame.frame = new MainFrame();
             }
         });
