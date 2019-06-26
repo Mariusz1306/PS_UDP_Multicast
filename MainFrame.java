@@ -80,8 +80,8 @@ public class MainFrame extends JFrame {
     static void add2output(String str) {
         try {
             frame.output.getDocument().insertString(0, str + "\n", null);
-        } catch (BadLocationException var2) {
-            var2.printStackTrace();
+        } catch (BadLocationException e) {
+            e.printStackTrace();
         }
 
     }
@@ -90,8 +90,8 @@ public class MainFrame extends JFrame {
         EventQueue.invokeLater(() -> {
             try {
                 UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-            } catch (Exception var2) {
-                var2.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             MainFrame.frame = new MainFrame();
         });

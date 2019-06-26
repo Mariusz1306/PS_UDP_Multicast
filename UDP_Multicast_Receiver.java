@@ -107,10 +107,10 @@ public class UDP_Multicast_Receiver extends Thread {
                         MainFrame.add2output(message);
                     }
                 }
-            } catch (IOException var4) {
-                if (!var4.getMessage().equalsIgnoreCase("Receive timed out")) {
-                    var4.printStackTrace();
-                    MainFrame.add2output(var4.getMessage());
+            } catch (IOException e) {
+                if (!e.getMessage().equalsIgnoreCase("Receive timed out")) {
+                    e.printStackTrace();
+                    MainFrame.add2output(e.getMessage());
                 }
             }
         }
