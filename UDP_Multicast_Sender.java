@@ -8,7 +8,7 @@ public class UDP_Multicast_Sender {
     public UDP_Multicast_Sender() {
     }
 
-    public static void sendData(String group, int port, String mesg) {
+    static void sendData(String group, int port, String mesg) {
         byte ttl = 1;
 
         try {
