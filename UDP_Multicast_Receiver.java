@@ -10,6 +10,7 @@ public class UDP_Multicast_Receiver extends Thread {
     private boolean isReceiving = false;
     private String nick;
     private boolean isReserved;
+    private long timeToLive = 5000;
 
     boolean isNickBusy() {
         return isNickBusy;
@@ -63,8 +64,34 @@ public class UDP_Multicast_Receiver extends Thread {
     public void run() {
         byte[] buf = new byte[1024];
         DatagramPacket pack = new DatagramPacket(buf, buf.length);
-        UDP_Multicast_Sender.sendData(this.group, this.port, "NICK " + this.nick);
-        for (int i = 0; i < 2; i++) {
+        Thread thread = new Thread(() -> {
+            long end = System.currentTimeMillis() + timeToLive;
+            UDP_Multicast_Sender.sendData(this.group, this.port, "NICK " + this.nick);
+            while (end > System.currentTimeMillis() || !this.isNickBusy){
+                try {
+                    this.s.receive(pack);
+                    String message = new String(pack.getData(), pack.getOffset(), pack.getLength());
+                    String[] splittedMessage = message.split(" ");
+                    if (splittedMessage[splittedMessage.length - 1].equalsIgnoreCase("BUSY")) {
+                        this.isNickBusy = true;
+                    }
+                } catch (IOException e) {
+                    if (!e.getMessage().equalsIgnoreCase("Receive timed out")) {
+                        e.printStackTrace();
+                        MainFrame.add2output(e.getMessage());
+                    }
+                }
+            }
+
+        });
+
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e){
+
+        }
+        /*for (int i = 0; i < 2; i++) {
             try {
                 this.s.receive(pack);
                 String message = new String(pack.getData(), pack.getOffset(), pack.getLength());
@@ -78,7 +105,7 @@ public class UDP_Multicast_Receiver extends Thread {
                     MainFrame.add2output(e.getMessage());
                 }
             }
-        }
+        }*/
 
         if (this.s.isClosed())
             return;
