@@ -67,7 +67,7 @@ public class UDP_Multicast_Receiver extends Thread {
         Thread thread = new Thread(() -> {
             long end = System.currentTimeMillis() + timeToLive;
             UDP_Multicast_Sender.sendData(this.group, this.port, "NICK " + this.nick);
-            while (end > System.currentTimeMillis() || !this.isNickBusy){
+            while (end > System.currentTimeMillis() && !this.isNickBusy){
                 try {
                     this.s.receive(pack);
                     String message = new String(pack.getData(), pack.getOffset(), pack.getLength());
